@@ -2,7 +2,7 @@
 
 A **premium, zero‑maintenance status page** built with Astro and Tailwind CSS. It provides a beautiful, dark‑mode UI, real‑time service status, uptime history bars, and a GitHub‑linked header with version badge.
 
-![Open Status Demo](https://raw.githubusercontent.com/0x98c9/open-status/main/public/open-status.png)
+[![Open Status Demo](https://raw.githubusercontent.com/0x98c9/open-status/main/public/open-status.png)](https://open-status.pages.dev/)
 
 ---
 
