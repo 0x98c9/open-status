@@ -1,7 +1,7 @@
 {
     "title": "Open Status",
     "description": "Real-time service status",
-    "repo_url": "https://github.com/yourusername/open-status",
+    "repo_url": "https://github.com/0x98c9/open-status",
     "version": "v1.0.0",
     "overall_status": "operational",
     "services": [

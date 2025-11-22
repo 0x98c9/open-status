@@ -1,0 +1,81 @@
+---
+const { services } = Astro.props;
+
+const generateUptimeHistory = (currentStatus: string) => {
+    const days = 90;
+    const history: string[] = [];
+    for (let i = 0; i < days; i++) {
+        const rand = Math.random();
+        let status = "operational";
+        if (currentStatus !== "operational" && i > days - 5) {
+            status = currentStatus;
+        } else if (rand > 0.98) {
+            status = "degraded";
+        } else if (rand > 0.995) {
+            status = "outage";
+        }
+        history.push(status);
+    }
+    return history;
+};
+---
+
+<section class="mb-16">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-slate-200">Status by service</h2>
+        <div class="flex items-center gap-2 text-sm text-slate-400">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span>Operational</span>
+        </div>
+    </div>
+    <div class="grid gap-4">
+        {
+            services.map((service: any) => {
+                const history = generateUptimeHistory(service.status);
+                const uptime =
+                    service.status === "operational" ? "99.98%" : "98.50%";
+                return (
+                    <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class={`w-5 h-5 rounded-full flex items-center justify-center ${service.status === "operational" ? "bg-emerald-500/20 text-emerald-500" : "bg-amber-500/20 text-amber-500"}`}
+                                >
+                                    <svg
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        class="w-3.5 h-3.5"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold text-slate-200">
+                                    {service.name}
+                                </h3>
+                            </div>
+                            <span class="text-sm font-medium text-slate-400">
+                                {uptime} uptime
+                            </span>
+                        </div>
+                        <div class="flex items-end gap-[3px] h-8 mb-2">
+                            {history.map((dayStatus: string) => (
+                                <div
+                                    class={`flex-1 rounded-sm transition-all hover:opacity-80 ${dayStatus === "operational" ? "bg-emerald-500/80 h-full" : dayStatus === "degraded" ? "bg-amber-500 h-3/4" : "bg-rose-500 h-1/2"}`}
+                                    title={dayStatus}
+                                />
+                            ))}
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <span>90 days ago</span>
+                            <span>Today</span>
+                        </div>
+                    </div>
+                );
+            })
+        }
+    </div>
+</section>
