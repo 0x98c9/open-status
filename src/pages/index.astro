@@ -1,0 +1,203 @@
+---
+import statusData from "../data/status.json";
+import "../styles/global.css";
+
+const { title, description, overall_status, services, incidents, repo_url, version } = statusData as any;
+
+const getStatusColor = (status: string) => {
+	switch (status) {
+		case "operational":
+			return "bg-emerald-500";
+		case "degraded":
+			return "bg-amber-500";
+		case "outage":
+			return "bg-rose-500";
+		default:
+			return "bg-gray-500";
+	}
+};
+
+const getStatusText = (status: string) => {
+	switch (status) {
+		case "operational":
+			return "Operational";
+		case "degraded":
+			return "Degraded Performance";
+		case "outage":
+			return "Major Outage";
+		default:
+			return "Unknown";
+	}
+};
+
+// Mock data generator for the bars (90 days)
+const generateUptimeHistory = (currentStatus: string) => {
+    const days = 90;
+    const history = [];
+    for (let i = 0; i < days; i++) {
+        // Mostly operational, random degraded/outage if current status isn't perfect
+        const rand = Math.random();
+        let status = 'operational';
+        if (currentStatus !== 'operational' && i > days - 5) {
+             status = currentStatus; // Recent issues
+        } else if (rand > 0.98) {
+            status = 'degraded';
+        } else if (rand > 0.995) {
+            status = 'outage';
+        }
+        history.push(status);
+    }
+    return history;
+};
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body
+		class="bg-slate-950 text-slate-50 font-['Inter'] antialiased min-h-screen flex flex-col"
+	>
+		<main class="flex-grow container mx-auto px-4 py-8 max-w-3xl">
+			<!-- Header -->
+			<header class="mb-12 flex items-center justify-between">
+                <div>
+				    <h1 class="text-2xl font-bold tracking-tight">{title}</h1>
+                    <p class="text-slate-400 text-sm">{description}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400">
+                        {version}
+                    </span>
+                    <a href={repo_url} target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors">
+                        <span class="sr-only">GitHub</span>
+                        <svg viewBox="0 0 16 16" class="w-6 h-6" fill="currentColor" aria-hidden="true">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                    </a>
+                </div>
+			</header>
+
+			<!-- Overall Status -->
+			<div
+				class={`rounded-2xl p-6 mb-12 flex items-center justify-between ${overall_status === "operational" ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-amber-500/10 border border-amber-500/20"}`}
+			>
+				<div class="flex items-center gap-4">
+					<div
+						class={`w-4 h-4 rounded-full ${getStatusColor(overall_status)} animate-pulse`}
+					>
+					</div>
+					<span class="text-xl font-semibold">
+						{
+							overall_status === "operational"
+								? "All Systems Operational"
+								: "Some Systems Degraded"
+						}
+					</span>
+				</div>
+			</div>
+
+			<!-- Services -->
+			<section class="mb-16">
+                <div class="flex items-center justify-between mb-6">
+				    <h2 class="text-xl font-semibold text-slate-200">Status by service</h2>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                        <span>Operational</span>
+                    </div>
+                </div>
+				<div class="grid gap-4">
+					{
+						services.map((service: any) => {
+                            const history = generateUptimeHistory(service.status);
+                            const uptime = service.status === 'operational' ? '99.98%' : '98.50%'; // Mock uptime
+                            return (
+							<div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class={`w-5 h-5 rounded-full flex items-center justify-center ${service.status === 'operational' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-amber-500/20 text-amber-500'}`}>
+                                            <svg viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold text-slate-200">
+                                            {service.name}
+                                        </h3>
+                                    </div>
+                                    <span class="text-sm font-medium text-slate-400">{uptime} uptime</span>
+                                </div>
+                                
+                                <!-- Uptime Bars -->
+                                <div class="flex items-end gap-[3px] h-8 mb-2">
+                                    {history.map((dayStatus) => (
+                                        <div 
+                                            class={`flex-1 rounded-sm transition-all hover:opacity-80 ${dayStatus === 'operational' ? 'bg-emerald-500/80 h-full' : dayStatus === 'degraded' ? 'bg-amber-500 h-3/4' : 'bg-rose-500 h-1/2'}`}
+                                            title={dayStatus}
+                                        ></div>
+                                    ))}
+                                </div>
+                                <div class="flex justify-between text-xs text-slate-500">
+                                    <span>90 days ago</span>
+                                    <span>Today</span>
+                                </div>
+							</div>
+						)})
+					}
+				</div>
+			</section>
+
+			<!-- Incidents -->
+			<section>
+				<h2 class="text-xl font-semibold mb-6 text-slate-200">
+					Past Incidents
+				</h2>
+				<div class="space-y-8">
+					{
+						incidents.map((incident: any) => (
+							<div class="relative pl-8 border-l border-slate-800 pb-8 last:pb-0">
+								<div class="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-slate-700 border border-slate-950" />
+								<div class="mb-2">
+									<h3 class="font-medium text-slate-200">
+										{incident.title}
+									</h3>
+									<time class="text-sm text-slate-500">
+										{incident.date}
+									</time>
+								</div>
+								<div class="prose prose-invert prose-sm text-slate-400">
+									<p>{incident.body}</p>
+								</div>
+								<div class="mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-400">
+									{incident.status}
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</section>
+		</main>
+
+		<footer
+			class="py-8 text-center text-slate-600 text-sm border-t border-slate-900"
+		>
+			<p>
+				Powered by <a
+					href="#"
+					class="hover:text-slate-400 transition-colors"
+					>Open Status</a
+				>
+			</p>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+{
+    "title": "Open Status",
+    "description": "Real-time service status",
+    "repo_url": "https://github.com/yourusername/open-status",
+    "version": "v1.0.0",
+    "overall_status": "operational",
+    "services": [
+        {
+            "name": "Website",
+            "status": "operational",
+            "description": "Main landing page and documentation"
+        },
+        {
+            "name": "API",
+            "status": "operational",
+            "description": "Core API services"
+        },
+        {
+            "name": "Database",
+            "status": "degraded",
+            "description": "Primary database cluster"
+        },
+        {
+            "name": "CDN",
+            "status": "operational",
+            "description": "Content delivery network"
+        }
+    ],
+    "incidents": [
+        {
+            "date": "2023-10-27",
+            "title": "Database Latency",
+            "status": "resolved",
+            "body": "We are investigating reports of elevated latency."
+        }
+    ]
+}
