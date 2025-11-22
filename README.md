@@ -22,7 +22,7 @@ A **premium, zero‑maintenance status page** built with Astro and Tailwind CSS.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/open-status.git
+git clone https://github.com/0x98c9/open-status.git
 cd open-status
 
 # Install dependencies
