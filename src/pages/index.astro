@@ -1,11 +1,15 @@
 ---
-import statusData from "../data/status.json";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import OverallStatus from "../components/OverallStatus.astro";
 import ServiceList from "../components/ServiceList.astro";
 import IncidentList from "../components/IncidentList.astro";
 import Footer from "../components/Footer.astro";
+import LiveStatus from "../components/LiveStatus.astro";
+import { getStatusData } from "./api/status";
+
+// Fetch live status data on every request (SSR)
+const statusData = await getStatusData();
 
 const {
 	title,
@@ -15,7 +19,7 @@ const {
 	incidents,
 	repo_url,
 	version,
-} = statusData as any;
+} = statusData;
 ---
 
 <html lang="en">
@@ -48,5 +52,6 @@ const {
 			<IncidentList incidents={incidents} />
 		</main>
 		<Footer />
+		<LiveStatus />
 	</body>
 </html>

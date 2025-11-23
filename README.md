@@ -8,13 +8,16 @@ A **premium, zero‑maintenance status page** built with Astro and Tailwind CSS.
 
 ## ✨ Features
 
-- **Dynamic Header** – Shows project title, description, version badge, and a clickable GitHub icon.
-- **Overall System Status** – Color‑coded badge with pulsing indicator.
-- **Service Cards** – Each service displays name, description, real‑time status, mock uptime percentage, and a 90‑day bar chart visualising historical uptime.
-- **Incident Timeline** – Past incidents displayed with timestamps and status tags.
-- **Zero‑Database** – All data lives in a simple JSON file (`src/data/status.json`).
-- **Responsive & Accessible** – Tailwind‑powered layout works on all screen sizes.
-- **Easy to Deploy** – Works on Vercel, Netlify, Cloudflare Pages, or any static host.
+- **🔴 Live Status Checks** – Real-time health monitoring on every page load (SSR)
+- **🌍 Edge-Powered** – Runs on Cloudflare's 300+ global datacenters
+- **⚡ Dynamic Rendering** – No static JSON files, status fetched live from the edge
+- **📊 Response Time Tracking** – Shows actual latency for each service
+- **🗺️ Geo-Location Aware** – Displays which city the check was performed from
+- **🔄 Auto-Refresh** – Client-side updates every 60 seconds
+- **📈 Uptime History** – 90-day bar chart visualization
+- **🎨 Premium Dark UI** – Modern, glassmorphic design with smooth animations
+- **📱 Fully Responsive** – Works perfectly on all devices
+- **🚀 Zero Database** – Serverless architecture, no maintenance required
 
 ---
 
@@ -52,10 +55,76 @@ All status information is stored in `src/data/status.json`. Edit this file to up
 - **repo_url** – URL of the GitHub repository (used for the header icon).
 - **version** – Current version badge.
 - **overall_status** – Overall system health (`operational`, `degraded`, `outage`).
-- **services** – Array of service objects (`name`, `status`, `description`).
+- **services** – Array of service objects (`name`, `url`, `status`, `description`).
 - **incidents** – Array of past incident objects (`date`, `title`, `status`, `body`).
 
 The UI will automatically reflect any changes you make.
+
+---
+
+## 🌍 Live Monitoring (Cloudflare Edge)
+
+This status page runs on **Cloudflare's Edge Network** (300+ cities worldwide), making it faster and more accurate than traditional single-region deployments.
+
+### How It Works
+
+1. **Edge API Route** (`/api/status`) – Checks service health from the nearest Cloudflare datacenter
+2. **Real-time Updates** – Page automatically refreshes status every 60 seconds
+3. **Geo-Location Info** – Shows which city the check was performed from (when deployed to Cloudflare)
+4. **Response Time Tracking** – Displays actual response times for each service
+
+### API Endpoint
+
+Visit `/api/status` to get JSON status data:
+
+```json
+{
+  "checked_from": {
+    "city": "Mumbai",
+    "country": "IN",
+    "datacenter": "BOM"
+  },
+  "timestamp": "2025-11-22T18:00:00.000Z",
+  "overall_status": "operational",
+  "services": [
+    {
+      "name": "Website",
+      "url": "https://open-status.pages.dev/",
+      "status": "operational",
+      "responseTime": 145
+    }
+  ]
+}
+```
+
+---
+
+## 🚀 Deployment to Cloudflare Pages
+
+1. **Push to GitHub** (already done!)
+
+2. **Go to Cloudflare Dashboard**
+   - Navigate to **Workers & Pages**
+   - Click **Create Application** → **Pages** → **Connect to Git**
+
+3. **Select Your Repository**
+   - Choose `0x98c9/open-status`
+
+4. **Build Settings**
+   - Framework Preset: **Astro**
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+
+5. **Deploy!**
+   - Click **Save and Deploy**
+   - Your status page will be live at `https://open-status.pages.dev`
+
+### Why Cloudflare?
+
+- ⚡ **300+ Edge Locations** – Checks run from the nearest datacenter to your users
+- 🌐 **Global Accuracy** – More reliable than single-region checks
+- 🔥 **Zero Cold Starts** – Instant response times
+- 💰 **Free Tier** – Generous limits for status pages
 
 ---
 

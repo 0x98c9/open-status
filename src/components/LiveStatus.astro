@@ -1,0 +1,79 @@
+<script>
+    // Fetch live status from the API
+    async function fetchLiveStatus() {
+        try {
+            const response = await fetch("/api/status");
+            const data = await response.json();
+
+            // Update the page with live data
+            updateStatus(data);
+        } catch (error) {
+            console.error("Failed to fetch live status:", error);
+        }
+    }
+
+    function updateStatus(data: any) {
+        // Update overall status
+        const overallStatusEl = document.querySelector("[data-overall-status]");
+        if (overallStatusEl) {
+            const statusText =
+                data.overall_status === "operational"
+                    ? "All Systems Operational"
+                    : "Some Systems Degraded";
+            overallStatusEl.textContent = statusText;
+        }
+
+        // Update location info if available
+        if (data.checked_from && data.checked_from.city !== "Unknown") {
+            const locationEl = document.querySelector("[data-location]");
+            if (locationEl) {
+                locationEl.textContent = `Checked from ${data.checked_from.city}, ${data.checked_from.country}`;
+                locationEl.classList.remove("hidden");
+            }
+        }
+
+        // Update individual services
+        data.services.forEach((service: any) => {
+            const serviceEl = document.querySelector(
+                `[data-service="${service.name}"]`,
+            );
+            if (serviceEl) {
+                const statusBadge = serviceEl.querySelector(
+                    "[data-status-badge]",
+                );
+                const responseTimeEl = serviceEl.querySelector(
+                    "[data-response-time]",
+                );
+
+                if (statusBadge) {
+                    statusBadge.textContent = service.status;
+                    statusBadge.className = `text-sm ${
+                        service.status === "operational"
+                            ? "text-emerald-400"
+                            : service.status === "degraded"
+                              ? "text-amber-400"
+                              : "text-rose-400"
+                    }`;
+                }
+
+                if (responseTimeEl && service.responseTime) {
+                    responseTimeEl.textContent = `${service.responseTime}ms`;
+                    responseTimeEl.classList.remove("hidden");
+                }
+            }
+        });
+
+        // Update timestamp
+        const timestampEl = document.querySelector("[data-timestamp]");
+        if (timestampEl) {
+            const time = new Date(data.timestamp).toLocaleTimeString();
+            timestampEl.textContent = `Last checked: ${time}`;
+        }
+    }
+
+    // Fetch status on page load
+    fetchLiveStatus();
+
+    // Refresh every 60 seconds
+    setInterval(fetchLiveStatus, 60000);
+</script>

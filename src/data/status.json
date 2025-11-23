@@ -7,21 +7,25 @@
     "services": [
         {
             "name": "Website",
+            "url": "https://open-status.pages.dev/",
             "status": "operational",
             "description": "Main landing page and documentation"
         },
         {
             "name": "API",
+            "url": "https://jsonplaceholder.typicode.com/posts/1",
             "status": "operational",
             "description": "Core API services"
         },
         {
             "name": "Database",
-            "status": "degraded",
+            "url": "https://httpstat.us/200",
+            "status": "operational",
             "description": "Primary database cluster"
         },
         {
             "name": "CDN",
+            "url": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
             "status": "operational",
             "description": "Content delivery network"
         }
