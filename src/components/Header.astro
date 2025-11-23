@@ -2,12 +2,16 @@
 const { title, description, version, repo_url } = Astro.props;
 ---
 
-<header class="mb-12 flex items-center justify-between">
+<header
+    class="mb-8 sm:mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0"
+>
     <div>
         <h1 class="text-2xl font-bold tracking-tight">{title}</h1>
         <p class="text-slate-400 text-sm">{description}</p>
     </div>
-    <div class="flex items-center gap-4">
+    <div
+        class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start"
+    >
         <span
             class="text-xs font-medium px-2 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400"
         >
